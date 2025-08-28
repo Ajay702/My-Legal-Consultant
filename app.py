@@ -30,7 +30,7 @@ def home():
             )
 
             completion = client.chat.completions.create(
-                model="llama3-70b-8192",
+                model="openai/gpt-oss-20b",
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_input}
@@ -52,3 +52,4 @@ def home():
 
 if __name__ == '__main__':
     app.run()
+
