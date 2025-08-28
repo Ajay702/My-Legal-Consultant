@@ -422,7 +422,7 @@
             <p>Your trusted legal consultation companion</p>
         </div>
         
-        <form action="#" method="post" onsubmit="showLoading(event)">
+        <form action="#" method="post">
             <div class="input-container">
                 <textarea 
                     name="myTextarea" 
@@ -433,18 +433,9 @@
             
             <input type="submit" value="Get Legal Advice" class="submit-btn">
             
-            <div class="loading">
-                <div class="loading-dots">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
-            </div>
-            
-            <div class="response-container">
-                <div class="response-text">
-                    Welcome to Legal Advisor! Please enter your legal question above and click "Get Legal Advice" to receive comprehensive legal guidance. Our AI-powered system will analyze your query and provide detailed, relevant legal information to help you understand your situation better.
+            <div class="response-container" style="display: none;" id="responseContainer">
+                <div class="response-text" id="responseText">
+                    {{main}}
                 </div>
             </div>
         </form>
@@ -487,6 +478,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             const textarea = document.querySelector('textarea');
             const submitBtn = document.querySelector('.submit-btn');
+            const responseContainer = document.getElementById('responseContainer');
+            const responseText = document.getElementById('responseText');
+            
+            // Show response container if there's content (not just the placeholder)
+            if (responseText.textContent.trim() && responseText.textContent.trim() !== '{{main}}') {
+                responseContainer.style.display = 'block';
+            }
             
             // Auto-resize textarea
             textarea.addEventListener('input', function() {
