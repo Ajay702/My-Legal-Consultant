@@ -422,7 +422,7 @@
             <p>Your trusted legal consultation companion</p>
         </div>
         
-        <form action="#" method="post">
+        <form action="/" method="post">
             <div class="input-container">
                 <textarea 
                     name="myTextarea" 
@@ -433,7 +433,7 @@
             
             <input type="submit" value="Get Legal Advice" class="submit-btn">
             
-            <div class="response-container" style="display: none;" id="responseContainer">
+            <div class="response-container" id="responseContainer">
                 <div class="response-text" id="responseText">
                     {{main}}
                 </div>
@@ -481,8 +481,13 @@
             const responseContainer = document.getElementById('responseContainer');
             const responseText = document.getElementById('responseText');
             
-            // Show response container if there's content (not just the placeholder)
-            if (responseText.textContent.trim() && responseText.textContent.trim() !== '{{main}}') {
+            // Check if there's actual content from backend
+            const content = responseText.textContent.trim();
+            if (content === '' || content === '{{main}}') {
+                // No content from backend, hide the response container
+                responseContainer.style.display = 'none';
+            } else {
+                // There's actual content, show it
                 responseContainer.style.display = 'block';
             }
             
