@@ -241,7 +241,7 @@
             border: 1px solid #d1d9ff;
             border-radius: 16px;
             padding: 25px;
-            text-align: justify;
+            text-align: left;
             font-size: 16px;
             line-height: 1.8;
             color: #2c3e50;
@@ -265,6 +265,70 @@
         .response-text:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Style the formatted content */
+        .response-text h2, .response-text h3, .response-text h4 {
+            color: #667eea;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .response-text h2 {
+            font-size: 1.3em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 5px;
+        }
+
+        .response-text h3 {
+            font-size: 1.2em;
+        }
+
+        .response-text h4 {
+            font-size: 1.1em;
+        }
+
+        .response-text ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        .response-text li {
+            margin-bottom: 8px;
+            line-height: 1.7;
+            position: relative;
+        }
+
+        .response-text li::marker {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .response-text strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .response-text em {
+            color: #5a6c7d;
+            font-style: italic;
+        }
+
+        /* Style for paragraphs */
+        .response-text p {
+            margin: 12px 0;
+            line-height: 1.7;
+        }
+
+        /* Style for code/section references */
+        .response-text code {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #667eea;
+            font-weight: 500;
         }
 
         /* Legal scales icon */
