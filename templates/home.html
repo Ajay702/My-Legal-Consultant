@@ -520,7 +520,7 @@
             <p>Your trusted legal consultation companion</p>
         </div>
         
-        <form action="#" method="post">
+        <form method="post">
             <div class="input-container">
                 <textarea 
                     name="myTextarea" 
@@ -540,13 +540,15 @@
                 </div>
                 <p style="margin-top: 15px; color: #667eea; font-weight: 500;">Analyzing your legal query...</p>
             </div>
-            
-            <div class="response-container" id="responseContainer" style="display: none;">
-                <div class="response-text" id="responseText">
-                    {{main|safe}}
-                </div>
-            </div>
         </form>
+        
+        {% if submit_clicked and main %}
+        <div class="response-container">
+            <div class="response-text">
+                {{ main|safe }}
+            </div>
+        </div>
+        {% endif %}
     </div>
 
     <script>
@@ -555,20 +557,11 @@
             const textarea = document.querySelector('textarea');
             const submitBtn = document.querySelector('.submit-btn');
             const loading = document.getElementById('loading');
-            const responseContainer = document.getElementById('responseContainer');
-            const responseText = document.getElementById('responseText');
-            
-            // Check if there's content from backend
-            const content = responseText.innerHTML.trim();
-            if (content !== '' && content !== '{{main|safe}}' && content !== '{{main}}') {
-                responseContainer.style.display = 'block';
-            }
             
             // Form submission handling
             form.addEventListener('submit', function(e) {
                 // Show loading state
                 loading.style.display = 'block';
-                responseContainer.style.display = 'none';
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Processing...';
                 
