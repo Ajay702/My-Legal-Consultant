@@ -53,7 +53,7 @@
             box-shadow: 
                 0 20px 40px rgba(0, 0, 0, 0.1),
                 0 0 0 1px rgba(255, 255, 255, 0.2);
-            max-width: 600px;
+            max-width: 800px;
             width: 100%;
             padding: 40px;
             position: relative;
@@ -240,7 +240,7 @@
             background: linear-gradient(135deg, #f8f9ff, #e8ecff);
             border: 1px solid #d1d9ff;
             border-radius: 16px;
-            padding: 25px;
+            padding: 30px;
             text-align: left;
             font-size: 16px;
             line-height: 1.8;
@@ -249,6 +249,8 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            max-height: 600px;
+            overflow-y: auto;
         }
 
         .response-text::before {
@@ -267,36 +269,40 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
-        /* Style the formatted content */
-        .response-text h2, .response-text h3, .response-text h4 {
-            color: #667eea;
-            margin-top: 20px;
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
-
+        /* Enhanced styling for formatted content */
         .response-text h2 {
-            font-size: 1.3em;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 5px;
+            color: #667eea !important;
+            font-size: 1.4em !important;
+            margin: 25px 0 15px 0 !important;
+            font-weight: 600 !important;
+            border-bottom: 2px solid #667eea !important;
+            padding-bottom: 8px !important;
         }
 
         .response-text h3 {
-            font-size: 1.2em;
+            color: #667eea !important;
+            font-size: 1.2em !important;
+            margin: 20px 0 12px 0 !important;
+            font-weight: 600 !important;
         }
 
         .response-text h4 {
-            font-size: 1.1em;
+            color: #667eea !important;
+            font-size: 1.1em !important;
+            margin: 15px 0 10px 0 !important;
+            font-weight: 600 !important;
         }
 
         .response-text ul {
-            margin: 15px 0;
-            padding-left: 25px;
+            margin: 15px 0 !important;
+            padding-left: 25px !important;
+            list-style-type: disc !important;
         }
 
         .response-text li {
-            margin-bottom: 8px;
-            line-height: 1.7;
+            margin-bottom: 8px !important;
+            line-height: 1.7 !important;
+            color: #2c3e50 !important;
             position: relative;
         }
 
@@ -305,23 +311,22 @@
             font-weight: bold;
         }
 
+        .response-text p {
+            margin: 12px 0 !important;
+            line-height: 1.7 !important;
+            color: #2c3e50 !important;
+        }
+
         .response-text strong {
-            color: #2c3e50;
-            font-weight: 600;
+            color: #2c3e50 !important;
+            font-weight: 600 !important;
         }
 
         .response-text em {
-            color: #5a6c7d;
-            font-style: italic;
+            color: #5a6c7d !important;
+            font-style: italic !important;
         }
 
-        /* Style for paragraphs */
-        .response-text p {
-            margin: 12px 0;
-            line-height: 1.7;
-        }
-
-        /* Style for code/section references */
         .response-text code {
             background: rgba(102, 126, 234, 0.1);
             padding: 2px 6px;
@@ -350,6 +355,7 @@
         /* Loading animation */
         .loading {
             display: none;
+            text-align: center;
             margin-top: 20px;
         }
 
@@ -408,6 +414,7 @@
             .card {
                 padding: 30px 25px;
                 border-radius: 20px;
+                max-width: 95%;
             }
             .header h1 {
                 font-size: 2rem;
@@ -427,9 +434,10 @@
                 border-radius: 12px;
             }
             .response-text {
-                padding: 20px;
+                padding: 25px 20px;
                 font-size: 15px;
                 border-radius: 12px;
+                max-height: 500px;
             }
         }
 
@@ -454,9 +462,16 @@
                 font-size: 14px;
             }
             .response-text {
-                padding: 18px;
+                padding: 20px 15px;
                 font-size: 14px;
                 line-height: 1.6;
+                max-height: 400px;
+            }
+            .response-text h2 {
+                font-size: 1.2em !important;
+            }
+            .response-text h3 {
+                font-size: 1.1em !important;
             }
             .icon {
                 width: 30px;
@@ -471,6 +486,25 @@
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
             }
+        }
+
+        /* Custom scrollbar for response */
+        .response-text::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .response-text::-webkit-scrollbar-track {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 3px;
+        }
+
+        .response-text::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.3);
+            border-radius: 3px;
+        }
+
+        .response-text::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.5);
         }
     </style>
 </head>
@@ -497,63 +531,49 @@
             
             <input type="submit" value="Get Legal Advice" class="submit-btn">
             
-            <div class="response-container" id="responseContainer">
+            <div class="loading" id="loading">
+                <div class="loading-dots">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <p style="margin-top: 15px; color: #667eea; font-weight: 500;">Analyzing your legal query...</p>
+            </div>
+            
+            <div class="response-container" id="responseContainer" style="display: none;">
                 <div class="response-text" id="responseText">
-                    {{main}}
+                    {{main|safe}}
                 </div>
             </div>
         </form>
     </div>
 
     <script>
-        function showLoading(event) {
-            // Prevent actual form submission for demo
-            event.preventDefault();
-            
-            const loading = document.querySelector('.loading');
-            const responseContainer = document.querySelector('.response-container');
-            const submitBtn = document.querySelector('.submit-btn');
-            
-            // Show loading animation
-            loading.style.display = 'block';
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Processing...';
-            responseContainer.style.display = 'none';
-            
-            // Simulate processing time
-            setTimeout(() => {
-                loading.style.display = 'none';
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Get Legal Advice';
-                responseContainer.style.display = 'block';
-                
-                // Add a sample response
-                const responseText = document.querySelector('.response-text');
-                responseText.innerHTML = `
-                    <strong>Legal Analysis:</strong><br><br>
-                    Based on your query, here's a comprehensive legal overview. Please note that this is for informational purposes only and should not replace professional legal advice from a qualified attorney.<br><br>
-                    For your specific situation, I recommend consulting with a licensed attorney who can provide personalized guidance based on the complete details of your case and applicable local laws.<br><br>
-                    <em>Remember: This AI-generated advice is for educational purposes only.</em>
-                `;
-            }, 2000);
-        }
-
-        // Add smooth scrolling and form interaction enhancements
         document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
             const textarea = document.querySelector('textarea');
             const submitBtn = document.querySelector('.submit-btn');
+            const loading = document.getElementById('loading');
             const responseContainer = document.getElementById('responseContainer');
             const responseText = document.getElementById('responseText');
             
-            // Check if there's actual content from backend
-            const content = responseText.textContent.trim();
-            if (content === '' || content === '{{main}}') {
-                // No content from backend, hide the response container
-                responseContainer.style.display = 'none';
-            } else {
-                // There's actual content, show it
+            // Check if there's content from backend
+            const content = responseText.innerHTML.trim();
+            if (content !== '' && content !== '{{main|safe}}' && content !== '{{main}}') {
                 responseContainer.style.display = 'block';
             }
+            
+            // Form submission handling
+            form.addEventListener('submit', function(e) {
+                // Show loading state
+                loading.style.display = 'block';
+                responseContainer.style.display = 'none';
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Processing...';
+                
+                // Let the form submit normally
+            });
             
             // Auto-resize textarea
             textarea.addEventListener('input', function() {
@@ -564,20 +584,35 @@
             // Add ripple effect to button
             submitBtn.addEventListener('click', function(e) {
                 let ripple = document.createElement('span');
-                ripple.classList.add('ripple');
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(255,255,255,0.6)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s linear';
+                ripple.style.left = (e.clientX - this.offsetLeft - 25) + 'px';
+                ripple.style.top = (e.clientY - this.offsetTop - 25) + 'px';
+                ripple.style.width = '50px';
+                ripple.style.height = '50px';
+                
                 this.appendChild(ripple);
-                
-                let x = e.clientX - e.target.offsetLeft;
-                let y = e.clientY - e.target.offsetTop;
-                
-                ripple.style.left = x + 'px';
-                ripple.style.top = y + 'px';
                 
                 setTimeout(() => {
                     ripple.remove();
                 }, 600);
             });
         });
+        
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
