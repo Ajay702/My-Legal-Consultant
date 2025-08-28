@@ -5,12 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Legal Advisor</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             display: flex;
             justify-content: center;
@@ -18,502 +12,96 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            position: relative;
-            overflow-x: hidden;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
         }
-
-        /* Animated background particles */
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 1px, transparent 1px),
-                radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: float 20s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            33% { transform: translateY(-10px) rotate(1deg); }
-            66% { transform: translateY(5px) rotate(-1deg); }
-        }
-
         .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.1),
-                0 0 0 1px rgba(255, 255, 255, 0.2);
-            max-width: 600px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 80%;
             width: 100%;
-            padding: 40px;
-            position: relative;
-            animation: cardEntrance 1s ease-out;
-            transition: all 0.3s ease;
+            padding: 30px;
+            box-sizing: border-box;
         }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 
-                0 30px 60px rgba(0, 0, 0, 0.15),
-                0 0 0 1px rgba(255, 255, 255, 0.3);
-        }
-
-        @keyframes cardEntrance {
-            from {
-                opacity: 0;
-                transform: translateY(50px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            animation: fadeInDown 1s ease-out 0.3s both;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
-            position: relative;
-        }
-
-        .header h1::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 4px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 2px;
-            animation: lineExpand 1s ease-out 0.8s both;
-        }
-
-        @keyframes lineExpand {
-            from { width: 0; }
-            to { width: 60px; }
-        }
-
-        .header p {
-            color: #666;
-            font-size: 1.1rem;
-            font-weight: 300;
-            margin-top: 15px;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         form {
             text-align: center;
-            animation: fadeInUp 1s ease-out 0.5s both;
         }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .input-container {
-            position: relative;
-            margin-bottom: 30px;
-        }
-
         textarea {
             width: 100%;
-            height: 120px;
-            border-radius: 16px;
-            border: 2px solid #e1e5e9;
-            padding: 20px;
+            height: 100px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-sizing: border-box;
             font-size: 16px;
-            font-family: inherit;
             resize: none;
-            background: #fafbfc;
-            transition: all 0.3s ease;
-            outline: none;
-            line-height: 1.6;
+            margin-top: 10px;
         }
-
-        textarea:focus {
-            border-color: #667eea;
-            background: #fff;
-            transform: translateY(-2px);
-            box-shadow: 
-                0 10px 25px rgba(102, 126, 234, 0.1),
-                0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        textarea::placeholder {
-            color: #a0a6b1;
-            transition: all 0.3s ease;
-        }
-
-        textarea:focus::placeholder {
-            opacity: 0.7;
-            transform: translateY(-2px);
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            padding: 16px 40px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .submit-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
-        }
-
-        .submit-btn:hover::before {
-            left: 100%;
-        }
-
-        .submit-btn:active {
-            transform: translateY(-1px);
-        }
-
-        .response-container {
+        input[type="submit"] {
             margin-top: 30px;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .response-text {
-            background: linear-gradient(135deg, #f8f9ff, #e8ecff);
-            border: 1px solid #d1d9ff;
-            border-radius: 16px;
-            padding: 25px;
-            text-align: justify;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
             font-size: 16px;
-            line-height: 1.8;
-            color: #2c3e50;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            cursor: pointer;
         }
-
-        .response-text::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 16px 16px 0 0;
+        input[type="submit"]:hover {
+            background-color: #0056b3;
         }
-
-        .response-text:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        h3 {
+            text-align: justify;
+            margin: 20px 0;
+            font-size: 18px;
+            color: #333;
+            text-justify: inter-word; /* Ensures spaces are used to justify text /
         }
-
-        /* Legal scales icon */
-        .icon {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            opacity: 0.1;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        /* Loading animation */
-        .loading {
-            display: none;
-            margin-top: 20px;
-        }
-
-        .loading-dots {
-            display: inline-block;
-            position: relative;
-            width: 80px;
-            height: 80px;
-        }
-
-        .loading-dots div {
-            position: absolute;
-            top: 33px;
-            width: 13px;
-            height: 13px;
-            border-radius: 50%;
-            background: #667eea;
-            animation-timing-function: cubic-bezier(0, 1, 1, 0);
-        }
-
-        .loading-dots div:nth-child(1) {
-            left: 8px;
-            animation: loading1 0.6s infinite;
-        }
-        .loading-dots div:nth-child(2) {
-            left: 8px;
-            animation: loading2 0.6s infinite;
-        }
-        .loading-dots div:nth-child(3) {
-            left: 32px;
-            animation: loading2 0.6s infinite;
-        }
-        .loading-dots div:nth-child(4) {
-            left: 56px;
-            animation: loading3 0.6s infinite;
-        }
-
-        @keyframes loading1 {
-            0% { transform: scale(0); }
-            100% { transform: scale(1); }
-        }
-        @keyframes loading3 {
-            0% { transform: scale(1); }
-            100% { transform: scale(0); }
-        }
-        @keyframes loading2 {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(24px, 0); }
-        }
-
-        /* Mobile Responsiveness */
+        / Media Queries for Mobile Devices */
         @media (max-width: 768px) {
-            body {
-                padding: 15px;
-            }
             .card {
-                padding: 30px 25px;
-                border-radius: 20px;
+                padding: 20px;
+                max-width: 90%;
             }
-            .header h1 {
-                font-size: 2rem;
+            textarea {
+                height: 120px;
+                font-size: 14px;
             }
-            .header p {
-                font-size: 1rem;
+            input[type="submit"] {
+                font-size: 14px;
+                padding: 12px 18px;
+            }
+            h3 {
+                font-size: 16px;
+            }
+        }
+        @media (max-width: 480px) {
+            .card {
+                padding: 15px;
+                max-width: 100%;
             }
             textarea {
                 height: 100px;
-                font-size: 15px;
-                padding: 16px;
-                border-radius: 12px;
-            }
-            .submit-btn {
-                padding: 14px 30px;
-                font-size: 15px;
-                border-radius: 12px;
-            }
-            .response-text {
-                padding: 20px;
-                font-size: 15px;
-                border-radius: 12px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .card {
-                padding: 25px 20px;
-                border-radius: 16px;
-            }
-            .header h1 {
-                font-size: 1.8rem;
-            }
-            .header p {
-                font-size: 0.95rem;
-            }
-            textarea {
-                height: 90px;
-                font-size: 14px;
-                padding: 14px;
-            }
-            .submit-btn {
-                padding: 12px 25px;
                 font-size: 14px;
             }
-            .response-text {
-                padding: 18px;
+            input[type="submit"] {
                 font-size: 14px;
-                line-height: 1.6;
+                padding: 10px 16px;
             }
-            .icon {
-                width: 30px;
-                height: 30px;
-            }
-        }
-
-        /* Accessibility improvements */
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
+            h3 {
+                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
     <div class="card">
-        <!-- Legal scales icon -->
-        <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 4V2H9V4L3 7V9H4L5 16C5 17.1 5.9 18 7 18H10C11.1 18 12 17.1 12 16L13 9H11L12 16C12 17.1 12.9 18 14 18H17C18.1 18 19 17.1 19 16L20 9H21ZM7.5 7C7.5 6.17 8.17 5.5 9 5.5S10.5 6.17 10.5 7 9.83 8.5 9 8.5 7.5 7.83 7.5 7ZM13.5 7C13.5 6.17 14.17 5.5 15 5.5S16.5 6.17 16.5 7 15.83 8.5 15 8.5 13.5 7.83 13.5 7Z"/>
-        </svg>
-        
-        <div class="header">
-            <h1>Legal Advisor</h1>
-            <p>Your trusted legal consultation companion</p>
-        </div>
-        
-        <form action="/" method="post">
-            <div class="input-container">
-                <textarea 
-                    name="myTextarea" 
-                    placeholder="Describe your legal question or concern in detail..."
-                    required
-                ></textarea>
-            </div>
-            
-            <input type="submit" value="Get Legal Advice" class="submit-btn">
-            
-            <div class="response-container" id="responseContainer">
-                <div class="response-text" id="responseText">
-                    {{main}}
-                </div>
-            </div>
+        <form action="#" method="post">
+            <textarea name="myTextarea" placeholder="Type something..."></textarea><br>
+            <input type="submit" value="Submit">
+            <h3>{{main}}</h3>
         </form>
     </div>
-
-    <script>
-        function showLoading(event) {
-            // Prevent actual form submission for demo
-            event.preventDefault();
-            
-            const loading = document.querySelector('.loading');
-            const responseContainer = document.querySelector('.response-container');
-            const submitBtn = document.querySelector('.submit-btn');
-            
-            // Show loading animation
-            loading.style.display = 'block';
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Processing...';
-            responseContainer.style.display = 'none';
-            
-            // Simulate processing time
-            setTimeout(() => {
-                loading.style.display = 'none';
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Get Legal Advice';
-                responseContainer.style.display = 'block';
-                
-                // Add a sample response
-                const responseText = document.querySelector('.response-text');
-                responseText.innerHTML = `
-                    <strong>Legal Analysis:</strong><br><br>
-                    Based on your query, here's a comprehensive legal overview. Please note that this is for informational purposes only and should not replace professional legal advice from a qualified attorney.<br><br>
-                    For your specific situation, I recommend consulting with a licensed attorney who can provide personalized guidance based on the complete details of your case and applicable local laws.<br><br>
-                    <em>Remember: This AI-generated advice is for educational purposes only.</em>
-                `;
-            }, 2000);
-        }
-
-        // Add smooth scrolling and form interaction enhancements
-        document.addEventListener('DOMContentLoaded', function() {
-            const textarea = document.querySelector('textarea');
-            const submitBtn = document.querySelector('.submit-btn');
-            const responseContainer = document.getElementById('responseContainer');
-            const responseText = document.getElementById('responseText');
-            
-            // Check if there's actual content from backend
-            const content = responseText.textContent.trim();
-            if (content === '' || content === '{{main}}') {
-                // No content from backend, hide the response container
-                responseContainer.style.display = 'none';
-            } else {
-                // There's actual content, show it
-                responseContainer.style.display = 'block';
-            }
-            
-            // Auto-resize textarea
-            textarea.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = Math.min(this.scrollHeight, 200) + 'px';
-            });
-            
-            // Add ripple effect to button
-            submitBtn.addEventListener('click', function(e) {
-                let ripple = document.createElement('span');
-                ripple.classList.add('ripple');
-                this.appendChild(ripple);
-                
-                let x = e.clientX - e.target.offsetLeft;
-                let y = e.clientY - e.target.offsetTop;
-                
-                ripple.style.left = x + 'px';
-                ripple.style.top = y + 'px';
-                
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
-            });
-        });
-    </script>
 </body>
 </html>
