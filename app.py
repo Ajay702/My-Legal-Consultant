@@ -13,8 +13,8 @@ def format_response_to_points(text):
     # Clean up the text first
     text = text.strip()
     
-    # Split by major sections (headers, numbered lists, etc.)
-    sections = re.split(r'(?=^[A-Z][^.!?]*$|^[0-9]+\.|^[A-Z][a-z]+:|^[A-Z\s]+$)', text, flags=re.MULTILINE)
+    # Split by markdown headers (##)
+    sections = re.split(r'(?=^##\s+)', text, flags=re.MULTILINE)
     
     formatted_points = []
     
@@ -22,41 +22,59 @@ def format_response_to_points(text):
         section = section.strip()
         if not section:
             continue
-            
-        # Check if this is a header
-        if re.match(r'^[A-Z][^.!?]*$|^[0-9]+\.|^[A-Z][a-z]+:|^[A-Z\s]+$', section.strip(), re.MULTILINE):
-            # This is a header, add it as a separate point
-            formatted_points.append(f"<strong>{section.strip()}</strong>")
-        else:
-            # This is content, split into sentences and group logically
-            sentences = re.split(r'(?<=[.!?])\s+', section.strip())
-            current_point = ""
-            
-            for sentence in sentences:
-                sentence = sentence.strip()
-                if not sentence:
-                    continue
+        
+        # Check if this is a header section
+        if section.startswith('##'):
+            # Extract header text and content
+            lines = section.split('\n', 1)
+            if len(lines) > 1:
+                header = lines[0].replace('##', '').strip()
+                content = lines[1].strip()
                 
-                # Start new point if:
-                # 1. Current point is getting too long (>150 chars)
-                # 2. Sentence starts with specific keywords
-                # 3. Sentence contains bullet indicators
-                if (len(current_point) > 150 or
-                    sentence.startswith(('* ', '- ', '• ', '1. ', '2. ', '3. ')) or
-                    re.match(r'^[A-Z][a-z]+:', sentence)):
+                # Add header as a strong point
+                formatted_points.append(f"<strong>{header}</strong>")
+                
+                # Process content for bullet points
+                if content:
+                    # Split content by bullet points (*)
+                    bullet_points = re.split(r'(?=^\*\s+)', content, flags=re.MULTILINE)
                     
-                    if current_point:
-                        formatted_points.append(current_point.strip())
-                    current_point = sentence
-                else:
-                    if current_point:
-                        current_point += " " + sentence
-                    else:
-                        current_point = sentence
-            
-            # Add the last point
-            if current_point:
-                formatted_points.append(current_point.strip())
+                    for bullet in bullet_points:
+                        bullet = bullet.strip()
+                        if bullet.startswith('* '):
+                            # This is a bullet point
+                            bullet_text = bullet[2:].strip()
+                            formatted_points.append(f"• {bullet_text}")
+                        elif bullet and not bullet.startswith('*'):
+                            # This is regular text, split into sentences
+                            sentences = re.split(r'(?<=[.!?])\s+', bullet.strip())
+                            for sentence in sentences:
+                                sentence = sentence.strip()
+                                if sentence:
+                                    formatted_points.append(sentence)
+            else:
+                # Just a header with no content
+                header = section.replace('##', '').strip()
+                formatted_points.append(f"<strong>{header}</strong>")
+        else:
+            # Regular content section
+            if section:
+                # Split by bullet points first
+                bullet_points = re.split(r'(?=^\*\s+)', section, flags=re.MULTILINE)
+                
+                for bullet in bullet_points:
+                    bullet = bullet.strip()
+                    if bullet.startswith('* '):
+                        # This is a bullet point
+                        bullet_text = bullet[2:].strip()
+                        formatted_points.append(f"• {bullet_text}")
+                    elif bullet and not bullet.startswith('*'):
+                        # This is regular text, split into sentences
+                        sentences = re.split(r'(?<=[.!?])\s+', bullet.strip())
+                        for sentence in sentences:
+                            sentence = sentence.strip()
+                            if sentence:
+                                formatted_points.append(sentence)
     
     # Format as HTML bullet points
     if len(formatted_points) > 1:
@@ -93,8 +111,13 @@ def home():
                 system_prompt = (
                     "You are a legal expert specializing in Indian law, including the Constitution, statutes, and state-specific laws. "
                     "Answer only law-related questions as if explaining to someone with basic legal knowledge. "
-                    "Structure your response with clear sections using headers like 'Definition', 'Punishment', 'Key Provisions', etc. "
+                    "Structure your response with clear sections using markdown headers (##) like '## Definition', '## Punishment', '## Key Provisions', etc. "
                     "Use bullet points (*) for listing items and provide concise, accurate information. "
+                    "Format your response like this:\n\n"
+                    "## Section Name\n"
+                    "Content here with * bullet points for lists.\n\n"
+                    "## Next Section\n"
+                    "More content with * bullet points.\n\n"
                     "If a question is not about legal matters, reply with: "
                     "'I apologize, but my expertise lies in legal matters. Would you like to ask a law-related question?' "
                     "Do not provide non-law-related information, even if asked."
