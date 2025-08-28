@@ -5,163 +5,127 @@ import re
 
 app = Flask(__name__)
 
-def format_legal_response(text):
-    """Format legal response with proper HTML structure"""
+def format_response_to_points(text):
+    """Convert paragraph text to bullet points with better structure detection"""
     if not text.strip():
         return text
-    
+
     # Clean up the text first
     text = text.strip()
     
-    # Split by common section markers and format
-    sections = []
-    current_section = ""
+    # Split by major sections (headers, numbered lists, etc.)
+    sections = re.split(r'(?=^[A-Z][^.!?]*$|^[0-9]+\.|^[A-Z][a-z]+:|^[A-Z\s]+$)', text, flags=re.MULTILINE)
     
-    lines = text.split('\n')
+    formatted_points = []
     
-    for line in lines:
-        line = line.strip()
-        if not line:
+    for section in sections:
+        section = section.strip()
+        if not section:
             continue
             
-        # Check if this is a main heading (usually in **bold** or with ===)
-        if (line.startswith('**') and line.endswith('**')) or '===' in line:
-            if current_section:
-                sections.append(('section', current_section))
-                current_section = ""
-            # Remove markdown formatting
-            clean_heading = line.replace('**', '').replace('=', '').strip()
-            sections.append(('heading', clean_heading))
-            
-        # Check if this is a subheading (usually starts with ##)
-        elif line.startswith('##') or (line.startswith('**') and not line.endswith('**')):
-            if current_section:
-                sections.append(('section', current_section))
-                current_section = ""
-            clean_subheading = line.replace('#', '').replace('**', '').strip()
-            sections.append(('subheading', clean_subheading))
-            
-        # Check if this is a bullet point
-        elif line.startswith('* ') or line.startswith('- '):
-            point = line[2:].strip()
-            sections.append(('bullet', point))
-            
-        # Regular content
+        # Check if this is a header
+        if re.match(r'^[A-Z][^.!?]*$|^[0-9]+\.|^[A-Z][a-z]+:|^[A-Z\s]+$', section.strip(), re.MULTILINE):
+            # This is a header, add it as a separate point
+            formatted_points.append(f"<strong>{section.strip()}</strong>")
         else:
-            if current_section:
-                current_section += " " + line
+            # This is content, split into sentences and group logically
+            sentences = re.split(r'(?<=[.!?])\s+', section.strip())
+            current_point = ""
+            
+            for sentence in sentences:
+                sentence = sentence.strip()
+                if not sentence:
+                    continue
+                
+                # Start new point if:
+                # 1. Current point is getting too long (>150 chars)
+                # 2. Sentence starts with specific keywords
+                # 3. Sentence contains bullet indicators
+                if (len(current_point) > 150 or
+                    sentence.startswith(('* ', '- ', '• ', '1. ', '2. ', '3. ')) or
+                    re.match(r'^[A-Z][a-z]+:', sentence)):
+                    
+                    if current_point:
+                        formatted_points.append(current_point.strip())
+                    current_point = sentence
+                else:
+                    if current_point:
+                        current_point += " " + sentence
+                    else:
+                        current_point = sentence
+            
+            # Add the last point
+            if current_point:
+                formatted_points.append(current_point.strip())
+    
+    # Format as HTML bullet points
+    if len(formatted_points) > 1:
+        html_points = "<ul style='text-align: left; padding-left: 20px;'>"
+        for point in formatted_points:
+            # Check if point is already formatted (header)
+            if point.startswith('<strong>'):
+                html_points += f"<li style='margin-bottom: 15px; line-height: 1.6;'>{point}</li>"
             else:
-                current_section = line
-    
-    # Add any remaining content
-    if current_section:
-        sections.append(('section', current_section))
-    
-    # Generate HTML
-    html_output = ""
-    in_list = False
-    
-    for section_type, content in sections:
-        if section_type == 'heading':
-            if in_list:
-                html_output += "</ul>"
-                in_list = False
-            html_output += f'<h2 style="color: #667eea; font-size: 1.4em; margin: 25px 0 15px 0; font-weight: 600; border-bottom: 2px solid #667eea; padding-bottom: 8px;">{content}</h2>'
-            
-        elif section_type == 'subheading':
-            if in_list:
-                html_output += "</ul>"
-                in_list = False
-            html_output += f'<h3 style="color: #667eea; font-size: 1.2em; margin: 20px 0 12px 0; font-weight: 600;">{content}</h3>'
-            
-        elif section_type == 'bullet':
-            if not in_list:
-                html_output += '<ul style="margin: 15px 0; padding-left: 25px; list-style-type: disc;">'
-                in_list = True
-            html_output += f'<li style="margin-bottom: 8px; line-height: 1.7; color: #2c3e50;">{content}</li>'
-            
-        elif section_type == 'section':
-            if in_list:
-                html_output += "</ul>"
-                in_list = False
-            # Split long paragraphs into sentences for better readability
-            sentences = re.split(r'(?<=[.!?])\s+', content)
-            if len(sentences) > 2:
-                html_output += '<ul style="margin: 15px 0; padding-left: 25px; list-style-type: disc;">'
-                for sentence in sentences:
-                    if sentence.strip():
-                        html_output += f'<li style="margin-bottom: 8px; line-height: 1.7; color: #2c3e50;">{sentence.strip()}</li>'
-                html_output += '</ul>'
-            else:
-                html_output += f'<p style="margin: 12px 0; line-height: 1.7; color: #2c3e50;">{content}</p>'
-    
-    if in_list:
-        html_output += "</ul>"
-    
-    return html_output if html_output else text
+                html_points += f"<li style='margin-bottom: 10px; line-height: 1.6;'>{point}</li>"
+        html_points += "</ul>"
+        return html_points
+    else:
+        return text
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
     complete_content = ""
     submit_clicked = False
     greetings = ["hi", "hello", "hey", "greetings", "good morning", "good afternoon", "good evening"]
-    
+
     if request.method == 'POST':
         user_input = request.form['myTextarea'].strip().lower()
         submit_clicked = True
-        
+
         if user_input in greetings:
-            complete_content = """
-            <h2 style="color: #667eea; font-size: 1.4em; margin: 25px 0 15px 0; font-weight: 600;">Welcome to Legal Advisor!</h2>
-            <p style="margin: 12px 0; line-height: 1.7; color: #2c3e50;">
-                Hello! I'm here to assist you with your legal questions related to Indian law. 
-                I can help you understand various legal concepts, procedures, and rights under Indian jurisdiction.
-            </p>
-            <p style="margin: 12px 0; line-height: 1.7; color: #2c3e50;">
-                Please feel free to ask me about any legal matter you'd like to understand better.
-            </p>
-            """
+            complete_content = "Hello! How can I assist you with your legal questions today?"
         else:
-            client = Groq(
-                api_key=os.getenv('GROQ_API_KEY')
-            )
-            
-            system_prompt = (
-                "You are a legal expert specializing in Indian law. "
-                "Structure your response with clear sections and use this exact format:\n\n"
-                "**Section Name**\n"
-                "• Point 1\n"
-                "• Point 2\n\n"
-                "**Next Section**\n"
-                "• Point 1\n"
-                "• Point 2\n\n"
-                "Use ** for section headers and • for bullet points. Keep responses concise and professional."
-            )
-            
-            completion = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_input}
-                ],
-                temperature=0.7,  # Slightly lower for more consistent formatting
-                max_tokens=1024,
-                top_p=1,
-                stream=True,
-                stop=None,
-            )
-            
-            raw_content = ""
-            for chunk in completion:
-                raw_content += chunk.choices[0].delta.content or ""
-            
-            # Format the response
-            complete_content = format_legal_response(raw_content)
- 
+            try:
+                client = Groq(
+                    api_key=os.getenv('GROQ_API_KEY')
+                )
+
+                system_prompt = (
+                    "You are a legal expert specializing in Indian law, including the Constitution, statutes, and state-specific laws. "
+                    "Answer only law-related questions as if explaining to someone with basic legal knowledge. "
+                    "Structure your response with clear sections using headers like 'Definition', 'Punishment', 'Key Provisions', etc. "
+                    "Use bullet points (*) for listing items and provide concise, accurate information. "
+                    "If a question is not about legal matters, reply with: "
+                    "'I apologize, but my expertise lies in legal matters. Would you like to ask a law-related question?' "
+                    "Do not provide non-law-related information, even if asked."
+                )
+
+                completion = client.chat.completions.create(
+                    model="llama-3.3-70b-versatile",
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_input}
+                    ],
+                    temperature=0.7,
+                    max_tokens=1024,
+                    top_p=1,
+                    stream=True,
+                    stop=None,
+                )
+
+                raw_content = ""
+                for chunk in completion:
+                    raw_content += chunk.choices[0].delta.content or ""
+
+                # Format the response into points
+                complete_content = format_response_to_points(raw_content)
+                
+            except Exception as e:
+                complete_content = f"Error: {str(e)}. Please check your GROQ_API_KEY environment variable."
+
         return render_template('home.html', main=complete_content, submit_clicked=submit_clicked)
-    
+
     return render_template('home.html', main="", submit_clicked=submit_clicked)
 
 if __name__ == '__main__':
     app.run(debug=True)
-
