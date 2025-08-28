@@ -30,7 +30,7 @@ def home():
             )
 
             completion = client.chat.completions.create(
-                model="openai/gpt-oss-20b",
+                model="llama-3.3-70b-versatile",
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_input}
@@ -42,6 +42,8 @@ def home():
                 stop=None,
             )
 
+            
+
             for chunk in completion:
                 complete_content += chunk.choices[0].delta.content or ""
 
@@ -52,4 +54,5 @@ def home():
 
 if __name__ == '__main__':
     app.run()
+
 
