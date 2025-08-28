@@ -127,23 +127,15 @@ def home():
             )
             
             system_prompt = (
-                "You are a professional legal expert specializing in Indian law. "
-                "Structure your responses professionally with clear headings and bullet points. "
-                "Use the following format:\n\n"
-                "**Main Topic**\n"
-                "Brief introduction paragraph.\n\n"
-                "**Key Points**\n"
-                "* First important point with clear explanation\n"
-                "* Second important point with details\n"
-                "* Third point if applicable\n\n"
-                "**Legal Provisions**\n"
-                "* Relevant sections and acts\n"
-                "* Specific legal references\n\n"
-                "**Important Notes**\n"
-                "* Any warnings or disclaimers\n"
-                "* Recommendations for legal consultation\n\n"
-                "Keep explanations clear and professional. If the question is not law-related, "
-                "politely redirect to legal matters only."
+                "You are a legal expert specializing in Indian law. "
+                "Structure your response with clear sections and use this exact format:\n\n"
+                "**Section Name**\n"
+                "• Point 1\n"
+                "• Point 2\n\n"
+                "**Next Section**\n"
+                "• Point 1\n"
+                "• Point 2\n\n"
+                "Use ** for section headers and • for bullet points. Keep responses concise and professional."
             )
             
             completion = client.chat.completions.create(
@@ -172,3 +164,4 @@ def home():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
